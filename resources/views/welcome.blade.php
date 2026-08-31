@@ -80,7 +80,7 @@
             </ul>
 
             <div class="flex items-center gap-3">
-                <a href="#"
+                <a href="{{ route('login') }}"
                    class="hidden sm:inline-flex items-center px-5 py-2.5 rounded-full border border-ink/20 text-sm font-semibold text-ink hover:border-ink hover:bg-ink hover:text-cream transition-colors">
                     Masuk
                 </a>
@@ -102,7 +102,7 @@
             <a href="#alumni" class="block py-1">Alumni</a>
             <a href="#ppdb" class="block py-1">PPDB</a>
             <a href="#kontak" class="block py-1">Kontak</a>
-            <a href="#" class="block py-2 font-semibold text-ink">Masuk</a>
+            <a href="{{ route('login') }}" class="block py-2 font-semibold text-ink">Masuk</a>
         </div>
     </header>
 
@@ -345,7 +345,7 @@
                 <p class="font-display font-semibold text-ink text-sm">Informasi</p>
                 <ul class="mt-4 space-y-2 text-sm text-slate">
                     <li><a href="#ppdb" class="hover:text-ink">PPDB</a></li>
-                    <li><a href="#" class="hover:text-ink">Masuk Akun</a></li>
+                    <li><a href="{{ route('login') }}" class="hover:text-ink">Masuk Akun</a></li>
                 </ul>
             </div>
             <div>
