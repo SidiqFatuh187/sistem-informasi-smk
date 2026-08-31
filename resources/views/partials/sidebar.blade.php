@@ -4,8 +4,24 @@
         : null;
 @endphp
 
+<button
+    id="sidebarToggle"
+    type="button"
+    aria-label="Buka menu sidebar"
+    aria-expanded="false"
+    class="fixed left-4 top-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#17243f] text-lg text-[#f8f7f2] shadow-lg shadow-slate-900/20 transition hover:bg-[#22365d] md:hidden"
+>
+    ☰
+</button>
+
+<div
+    id="sidebarOverlay"
+    class="fixed inset-0 z-40 hidden bg-slate-900/40 md:hidden"
+></div>
+
 <aside
-    class="w-72 shrink-0 min-h-screen sticky top-0 p-6 shadow-xl shadow-slate-900/10 bg-[#17243f] text-[#f8f7f2]"
+    id="sidebarMenu"
+    class="fixed inset-y-0 left-0 z-50 w-72 -translate-x-full transform transition-transform duration-200 ease-in-out p-6 shadow-xl shadow-slate-900/10 bg-[#17243f] text-[#f8f7f2] md:static md:w-72 md:translate-x-0 md:shrink-0 md:min-h-screen md:sticky md:top-0"
 >
 
     {{-- LOGO / BRAND --}}
@@ -204,3 +220,73 @@
     </div>
 
 </aside>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const sidebar = document.getElementById('sidebarMenu');
+        const toggle = document.getElementById('sidebarToggle');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        if (!sidebar || !toggle || !overlay) {
+            return;
+        }
+
+        const setToggleState = function (isOpen) {
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            toggle.setAttribute('aria-label', isOpen ? 'Tutup menu sidebar' : 'Buka menu sidebar');
+            toggle.textContent = isOpen ? '✕' : '☰';
+        };
+
+        const closeSidebar = function () {
+            if (window.innerWidth >= 768) {
+                return;
+            }
+
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+            setToggleState(false);
+        };
+
+        const openSidebar = function () {
+            if (window.innerWidth >= 768) {
+                return;
+            }
+
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+            setToggleState(true);
+        };
+
+        const syncDesktopState = function () {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.add('hidden');
+                setToggleState(false);
+            }
+        };
+
+        toggle.addEventListener('click', function () {
+            if (window.innerWidth >= 768) {
+                return;
+            }
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                openSidebar();
+                return;
+            }
+
+            closeSidebar();
+        });
+
+        overlay.addEventListener('click', closeSidebar);
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape' && window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
+                closeSidebar();
+            }
+        });
+
+        window.addEventListener('resize', syncDesktopState);
+        syncDesktopState();
+    });
+</script>
