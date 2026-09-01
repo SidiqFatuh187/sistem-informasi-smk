@@ -19,4 +19,5 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('students', App\Http\Controllers\StudentController::class)->except(['show']);
+    Route::resource('classes', App\Http\Controllers\ClassController::class)->except(['show']);
 });

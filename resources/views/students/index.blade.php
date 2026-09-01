@@ -100,12 +100,35 @@
                             >
                         </div>
 
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:w-auto md:min-w-[420px]">
+                            <div>
+                                <label for="class_id" class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate">Kelas</label>
+                                <select id="class_id" name="class_id" class="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink focus:border-ink/30 focus:outline-none">
+                                    <option value="">Semua Kelas</option>
+                                    @foreach ($classes as $class)
+                                        <option value="{{ $class->id }}" {{ (string) ($classId ?? '') === (string) $class->id ? 'selected' : '' }}>
+                                            {{ $class->nama_kelas }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="jenis_kelamin" class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate">Jenis Kelamin</label>
+                                <select id="jenis_kelamin" name="jenis_kelamin" class="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink focus:border-ink/30 focus:outline-none">
+                                    <option value="">Semua</option>
+                                    <option value="Laki-laki" {{ $gender === 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="Perempuan" {{ $gender === 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="flex shrink-0 items-center gap-2 md:self-auto">
                             <button type="submit" class="rounded-xl bg-black px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition">
                                 Cari
                             </button>
 
-                            @if ($search)
+                            @if ($search || ($classId !== null && $classId !== '') || ($gender !== null && $gender !== ''))
                                 <a href="{{ route('students.index') }}" class="rounded-xl bg-[#e5e7eb] px-5 py-3 text-sm font-semibold text-ink hover:bg-[#d1d5db] transition">
                                     Reset
                                 </a>
@@ -126,7 +149,7 @@
 
 
                         <h2 class="text-xl font-bold text-ink">
-                            @if ($search)
+                            @if ($search || ($classId !== null && $classId !== '') || ($gender !== null && $gender !== ''))
                                 Tidak ada siswa yang cocok dengan pencarian
                             @else
                                 Belum ada data siswa
@@ -135,8 +158,8 @@
 
 
                         <p class="mt-2 text-sm text-slate">
-                            @if ($search)
-                                Coba cari dengan nama, NISN, atau kelas lain.
+                            @if ($search || ($classId !== null && $classId !== '') || ($gender !== null && $gender !== ''))
+                                Coba ubah filter kelas atau jenis kelamin, atau cari nama/NISN lain.
                             @else
                                 Mulai dengan menambahkan data siswa pertama di sekolah ini.
                             @endif
@@ -151,7 +174,7 @@
                                 + Tambah Siswa
                             </a>
 
-                            @if ($search)
+                            @if ($search || ($classId !== null && $classId !== '') || ($gender !== null && $gender !== ''))
                                 <a
                                     href="{{ route('students.index') }}"
                                     class="inline-flex rounded-full bg-[#e5e7eb] px-5 py-2.5 text-sm font-semibold text-ink shadow-sm hover:bg-[#d1d5db] transition"
@@ -190,6 +213,10 @@
                                         </th>
 
                                         <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate">
+                                            Wali Kelas
+                                        </th>
+
+                                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate">
                                             Jenis Kelamin
                                         </th>
 
@@ -218,6 +245,10 @@
 
                                             <td class="px-4 py-3 text-sm text-ink">
                                                 {{ $student->classRoom->nama_kelas ?? '-' }}
+                                            </td>
+
+                                            <td class="px-4 py-3 text-sm text-ink">
+                                                {{ $student->classRoom?->teacher?->nama ?? 'Belum ditentukan' }}
                                             </td>
 
                                             <td class="px-4 py-3 text-sm text-ink">
@@ -273,6 +304,30 @@
 
     </div>
 
+
+    <script>
+        const form = document.getElementById('studentSearchForm');
+        const searchInput = document.getElementById('search');
+        const classSelect = document.getElementById('class_id');
+        const genderSelect = document.getElementById('jenis_kelamin');
+
+        [searchInput, classSelect, genderSelect].forEach((element) => {
+            if (!element) return;
+
+            if (element === searchInput) {
+                element.addEventListener('input', () => {
+                    clearTimeout(window.studentFilterTimer);
+                    window.studentFilterTimer = setTimeout(() => form.requestSubmit(), 300);
+                });
+            }
+
+            if (element !== searchInput) {
+                element.addEventListener('change', () => {
+                    form.requestSubmit();
+                });
+            }
+        });
+    </script>
 
     {{-- Delete Modal --}}
     <div

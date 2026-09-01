@@ -13,8 +13,18 @@ class StudentController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->input('search', ''));
+        $classId = $request->input('class_id');
+        $gender = $request->input('jenis_kelamin');
 
-        $students = Student::with('classRoom')
+        $classes = ClassModel::orderBy('nama_kelas')->get();
+
+        $students = Student::with('classRoom.teacher')
+            ->when($classId !== null && $classId !== '', function ($query) use ($classId) {
+                $query->where('class_id', $classId);
+            })
+            ->when($gender !== null && $gender !== '', function ($query) use ($gender) {
+                $query->where('jenis_kelamin', $gender);
+            })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('nama', 'like', "%{$search}%")
@@ -27,7 +37,7 @@ class StudentController extends Controller
             ->latest()
             ->get();
 
-        return view('students.index', compact('students', 'search'));
+        return view('students.index', compact('students', 'search', 'classes', 'classId', 'gender'));
     }
 
     public function create(): View
