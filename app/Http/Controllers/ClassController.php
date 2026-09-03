@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
+use App\Models\AcademicYear;
 use App\Models\Student;
 use App\Models\Teacher;
 use Illuminate\Support\Facades\DB;
@@ -87,8 +88,9 @@ class ClassController extends Controller
     public function create(): View
     {
         $teachers = Teacher::orderBy('nama')->get();
+        $academicYears = AcademicYear::orderByDesc('is_active')->orderByDesc('tahun')->get();
 
-        return view('classes.create', compact('teachers'));
+        return view('classes.create', compact('teachers', 'academicYears'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -96,6 +98,7 @@ class ClassController extends Controller
         $validated = $request->validate([
             'nama_kelas' => ['required', 'string', 'max:255', 'unique:classes,nama_kelas'],
             'teacher_id' => ['nullable', 'exists:teachers,id'],
+            'academic_year_id' => ['required', 'exists:academic_years,id'],
         ]);
 
         ClassModel::create($validated);
@@ -106,8 +109,9 @@ class ClassController extends Controller
     public function edit(ClassModel $class): View
     {
         $teachers = Teacher::orderBy('nama')->get();
+        $academicYears = AcademicYear::orderByDesc('is_active')->orderByDesc('tahun')->get();
 
-        return view('classes.edit', compact('class', 'teachers'));
+        return view('classes.edit', compact('class', 'teachers', 'academicYears'));
     }
 
     public function update(Request $request, ClassModel $class): RedirectResponse
@@ -115,6 +119,7 @@ class ClassController extends Controller
         $validated = $request->validate([
             'nama_kelas' => ['required', 'string', 'max:255', 'unique:classes,nama_kelas,' . $class->id],
             'teacher_id' => ['nullable', 'exists:teachers,id'],
+            'academic_year_id' => ['required', 'exists:academic_years,id'],
         ]);
 
         $class->update($validated);

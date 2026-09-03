@@ -16,7 +16,13 @@ class ClassModel extends Model
     protected $fillable = [
         'nama_kelas',
         'teacher_id',
+        'academic_year_id',
     ];
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
+    }
 
     public function teacher(): BelongsTo
     {

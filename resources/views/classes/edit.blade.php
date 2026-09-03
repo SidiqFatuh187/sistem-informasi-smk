@@ -50,6 +50,19 @@
                             @enderror
                         </div>
 
+                        <div>
+                            <label for="academic_year_id" class="block text-sm font-semibold text-ink mb-2">Tahun Ajaran</label>
+                            <select id="academic_year_id" name="academic_year_id" required class="w-full rounded-xl border border-ink/15 bg-cream/60 px-4 py-3 text-sm focus:outline-none focus:border-navy">
+                                <option value="">Pilih tahun ajaran</option>
+                                @foreach ($academicYears as $academicYear)
+                                    <option value="{{ $academicYear->id }}" {{ old('academic_year_id', $class->academic_year_id) == $academicYear->id ? 'selected' : '' }}>{{ $academicYear->tahun }} - {{ $academicYear->semester }}{{ $academicYear->is_active ? ' (Aktif)' : '' }}</option>
+                                @endforeach
+                            </select>
+                            @error('academic_year_id')
+                                <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="flex justify-end gap-3">
                             <a href="{{ route('classes.index') }}" class="rounded-full bg-[#e5e7eb] px-5 py-2.5 text-sm font-semibold text-ink hover:bg-[#d1d5db]">Batal</a>
                             <button type="submit" class="rounded-full bg-black px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">Perbarui</button>

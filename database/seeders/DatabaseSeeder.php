@@ -56,19 +56,19 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        AcademicYear::firstOrCreate(
+        $academicYear = AcademicYear::firstOrCreate(
             ['tahun' => '2025/2026', 'semester' => 'Ganjil'],
             ['is_active' => true]
         );
 
-        $kelasX = ClassModel::firstOrCreate(
+        $kelasX = ClassModel::updateOrCreate(
             ['nama_kelas' => 'XII RPL 1'],
-            ['teacher_id' => $teacher->id]
+            ['teacher_id' => $teacher->id, 'academic_year_id' => $academicYear->id]
         );
 
-        $kelasXI = ClassModel::firstOrCreate(
+        $kelasXI = ClassModel::updateOrCreate(
             ['nama_kelas' => 'XI TKJ 1'],
-            ['teacher_id' => $teacher->id]
+            ['teacher_id' => $teacher->id, 'academic_year_id' => $academicYear->id]
         );
 
         $studentData = [
