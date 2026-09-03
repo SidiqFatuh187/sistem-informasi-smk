@@ -38,4 +38,9 @@ class ClassModel extends Model
     {
         return $this->hasMany(Attendance::class, 'class_id');
     }
+
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(Schedule::class, 'class_id');
+    }
 }
