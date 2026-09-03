@@ -124,10 +124,14 @@
 
             {{-- DATA GURU --}}
             <a
-                href="#"
-                class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/75 transition-all duration-200 hover:bg-white/[0.07] hover:text-white"
+                href="{{ route('teachers.index') }}"
+                class="group relative flex items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ $currentRoute && str_starts_with($currentRoute, 'teachers') ? 'bg-gradient-to-r from-[#f5b63f]/25 via-white/10 to-transparent text-white' : 'text-white/75 hover:bg-white/[0.07] hover:text-white' }}"
             >
-                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 transition-colors group-hover:bg-white/15">
+                @if ($currentRoute && str_starts_with($currentRoute, 'teachers'))
+                    <span class="absolute inset-y-1.5 left-0 w-[3px] rounded-full bg-[#f5b63f]"></span>
+                @endif
+
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $currentRoute && str_starts_with($currentRoute, 'teachers') ? 'bg-[#f5b63f]/20' : 'bg-white/10 group-hover:bg-white/15' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
                 </span>
 

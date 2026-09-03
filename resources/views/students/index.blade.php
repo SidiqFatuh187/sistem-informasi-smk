@@ -269,16 +269,7 @@
 
 
                                                     {{-- Delete --}}
-                                                    <button
-                                                        type="button"
-                                                        onclick="openDeleteModal(
-                                                            '{{ route('students.destroy', $student) }}',
-                                                            '{{ addslashes($student->nama) }}'
-                                                        )"
-                                                        class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition"
-                                                    >
-                                                        Hapus
-                                                    </button>
+                                                    <x-delete :action="route('students.destroy', $student)" :name="$student->nama" />
 
                                                 </div>
 

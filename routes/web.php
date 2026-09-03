@@ -19,5 +19,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('students', App\Http\Controllers\StudentController::class)->except(['show']);
-    Route::resource('classes', App\Http\Controllers\ClassController::class)->except(['show']);
+    Route::post('/classes/promote-students', [App\Http\Controllers\ClassController::class, 'promoteStudents'])->name('classes.promote-students');
+    Route::post('/classes/{class}/promote-selected-students', [App\Http\Controllers\ClassController::class, 'promoteSelectedStudents'])->name('classes.promote-selected-students');
+    Route::resource('classes', App\Http\Controllers\ClassController::class);
+    Route::resource('teachers', App\Http\Controllers\TeacherController::class)->except(['show']);
 });

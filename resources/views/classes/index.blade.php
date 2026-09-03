@@ -46,6 +46,50 @@
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <section class="mb-6 rounded-2xl border border-[#17243f]/10 bg-[#f3f4f6] p-5 shadow-sm">
+                    <div class="mb-4">
+                        <h2 class="text-lg font-bold text-ink">Kenaikan Kelas</h2>
+                        <p class="mt-1 text-sm text-slate">Pindahkan seluruh siswa dari kelas sebelumnya ke kelas berikutnya.</p>
+                    </div>
+
+                    <form id="promotionForm" method="POST" action="{{ route('classes.promote-students') }}" class="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto] md:items-end">
+                        @csrf
+                        <div>
+                            <label for="source_class_id" class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate">Kelas asal</label>
+                            <select id="source_class_id" name="source_class_id" required class="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink focus:border-ink/30 focus:outline-none">
+                                <option value="">Pilih kelas asal</option>
+                                @foreach ($classes as $class)
+                                    <option value="{{ $class->id }}">{{ $class->nama_kelas }} ({{ $class->students->count() }} siswa)</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <span class="hidden pb-3 text-center text-xl text-slate md:block">&#8594;</span>
+                        <div>
+                            <label for="target_class_id" class="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate">Kelas tujuan</label>
+                            <select id="target_class_id" name="target_class_id" required class="w-full rounded-xl border border-ink/10 bg-white px-4 py-3 text-sm text-ink focus:border-ink/30 focus:outline-none">
+                                <option value="">Pilih kelas tujuan</option>
+                                @foreach ($classes as $class)
+                                    <option value="{{ $class->id }}">{{ $class->nama_kelas }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <x-confirm
+                            :action="route('classes.promote-students')"
+                            title="Konfirmasi Kenaikan Kelas"
+                            message="Semua siswa dari kelas asal akan dipindahkan ke kelas tujuan. Data absensi lama tetap aman. Lanjutkan?"
+                            confirm-text="Ya, Naikkan"
+                            button-text="Naikkan Siswa"
+                            form-id="promotionForm"
+                        />
+                    </form>
+                </section>
+
                 <form method="GET" action="{{ route('classes.index') }}" class="mb-6 rounded-2xl border border-ink/10 bg-[#f3f4f6] p-4 shadow-sm">
                     <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                         <div class="flex-1 min-w-0">
@@ -115,18 +159,18 @@
                                 <tbody class="divide-y divide-ink/10">
                                     @foreach ($classes as $class)
                                         <tr class="hover:bg-white/60 transition">
-                                            <td class="px-4 py-3 text-sm text-ink font-medium">{{ $class->nama_kelas }}</td>
+                                            <td class="px-4 py-3 text-sm text-ink font-medium">
+                                                <a href="{{ route('classes.show', $class) }}" class="hover:text-slate-600 hover:underline">{{ $class->nama_kelas }}</a>
+                                            </td>
                                             <td class="px-4 py-3 text-sm text-ink">{{ $class->teacher?->nama ?? 'Belum ditentukan' }}</td>
-                                            <td class="px-4 py-3 text-sm text-ink">{{ $class->students->count() }}</td>
+                                            <td class="px-4 py-3 text-sm text-ink"><a href="{{ route('classes.show', $class) }}" class="hover:underline">{{ $class->students->count() }} siswa</a></td>
                                             <td class="px-4 py-3 text-right">
                                                 <div class="flex justify-end gap-2">
                                                     <a href="{{ route('classes.edit', $class) }}" class="rounded-lg border border-amber/50 bg-amber/10 px-3 py-1.5 text-xs font-semibold text-navy hover:bg-amber/20 transition">
                                                         Edit
                                                     </a>
 
-                                                    <button type="button" onclick="openDeleteModal('{{ route('classes.destroy', $class) }}', '{{ addslashes($class->nama_kelas) }}')" class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition">
-                                                        Hapus
-                                                    </button>
+                                                    <x-delete :action="route('classes.destroy', $class)" :name="$class->nama_kelas" title="Hapus Kelas Ini?" />
                                                 </div>
                                             </td>
                                         </tr>
