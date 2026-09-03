@@ -191,6 +191,23 @@
         </div>
 
 
+        {{-- JADWAL PELAJARAN --}}
+        <a
+            href="{{ route('schedules.index') }}"
+            class="group relative flex items-center gap-3 overflow-hidden rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ $currentRoute && str_starts_with($currentRoute, 'schedules') ? 'bg-gradient-to-r from-[#f5b63f]/25 via-white/10 to-transparent text-white' : 'text-white/75 hover:bg-white/[0.07] hover:text-white' }}"
+        >
+            @if ($currentRoute && str_starts_with($currentRoute, 'schedules'))
+                <span class="absolute inset-y-1.5 left-0 w-[3px] rounded-full bg-[#f5b63f]"></span>
+            @endif
+
+            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $currentRoute && str_starts_with($currentRoute, 'schedules') ? 'bg-[#f5b63f]/20' : 'bg-white/10 group-hover:bg-white/15' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 9.75h18M4.5 5.25h15A1.5 1.5 0 0 1 21 6.75v12A1.5 1.5 0 0 1 19.5 20.25h-15A1.5 1.5 0 0 1 3 18.75v-12a1.5 1.5 0 0 1 1.5-1.5Z"/></svg>
+            </span>
+
+            <span>Jadwal Pelajaran</span>
+        </a>
+
+
         {{-- INPUT ABSENSI --}}
         <a
             href="#"
