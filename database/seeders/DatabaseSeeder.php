@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\AcademicYear;
 use App\Models\ClassModel;
 use App\Models\Student;
+use App\Models\Schedule;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -83,6 +84,47 @@ class DatabaseSeeder extends Seeder
                 ['nisn' => $student['nisn']],
                 $student
             );
+        }
+
+        $subjects = [
+            'Pendidikan Agama',
+            'Pendidikan Pancasila',
+            'Bahasa Indonesia',
+            'Matematika',
+            'Bahasa Inggris',
+            'Sejarah Indonesia',
+            'PJOK',
+            'Seni Budaya',
+            'Informatika',
+            'Dasar-Dasar Kejuruan',
+        ];
+
+        $timeSlots = [
+            ['07:00', '08:30'],
+            ['08:30', '10:00'],
+            ['10:15', '11:45'],
+            ['12:30', '14:00'],
+            ['14:00', '15:30'],
+        ];
+
+        foreach ([$kelasX, $kelasXI] as $class) {
+            foreach (['Senin', 'Selasa'] as $dayIndex => $day) {
+                foreach (array_slice($subjects, $dayIndex * 5, 5) as $index => $subject) {
+                Schedule::updateOrCreate(
+                    [
+                        'academic_year_id' => $academicYear->id,
+                        'class_id' => $class->id,
+                        'day' => $day,
+                        'start_time' => $timeSlots[$index][0],
+                    ],
+                    [
+                        'teacher_id' => $teacher->id,
+                        'subject' => $subject,
+                        'end_time' => $timeSlots[$index][1],
+                    ]
+                );
+                }
+            }
         }
 
         return;

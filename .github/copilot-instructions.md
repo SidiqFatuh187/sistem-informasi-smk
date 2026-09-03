@@ -12,7 +12,8 @@ Document status context and technical specification for GitHub Copilot assistant
 - [x] **Sidebar Dashboard Utama** (Selesai)
 - [x] **Role Middleware / Otorisasi Dasar** (Admin, Guru, Kepala Sekolah)
 - [x] **CRUD Data Master Siswa** (Selesai)
-- [ ] **Data Master CRUD** (Tahun Ajaran)
+- [x] **Data Master CRUD** (Guru, Kelas, Tahun Ajaran)
+- [x] **CRUD Jadwal Pelajaran** (Selesai)
 - [ ] **Form Input Absensi Harian** (Grid View Bulk Input)
 - [ ] **Laporan & Rekap Kehadiran** (Agregasi & Persentase)
 
@@ -23,6 +24,7 @@ Document status context and technical specification for GitHub Copilot assistant
 - CRUD siswa sudah dibuat, termasuk list, create, edit, update, delete, serta tombol hapus dengan modal konfirmasi.
 - CRUD kelas sudah dibuat, termasuk penugasan wali kelas, detail kelas, daftar siswa, dan kenaikan siswa secara massal maupun per siswa.
 - CRUD guru sudah dibuat, termasuk pembuatan akun login guru dan penugasan beberapa kelas sebagai wali kelas.
+- CRUD jadwal pelajaran sudah dibuat, termasuk tahun ajaran, kelas, guru pengajar, mata pelajaran, hari, dan jam pelajaran.
 - Komponen konfirmasi reusable tersedia untuk aksi hapus dan aksi penting seperti kenaikan kelas.
 - Penghapusan kelas yang masih memiliki siswa diblokir agar data siswa tidak ikut terhapus. Penghapusan guru melepas penugasan kelas tanpa menghapus kelas, siswa, atau riwayat absensi.
 - Halaman 403 role-aware sudah tersedia untuk menjelaskan batas akses dan menyediakan navigasi kembali.
