@@ -23,4 +23,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/classes/{class}/promote-selected-students', [App\Http\Controllers\ClassController::class, 'promoteSelectedStudents'])->name('classes.promote-selected-students');
     Route::resource('classes', App\Http\Controllers\ClassController::class);
     Route::resource('teachers', App\Http\Controllers\TeacherController::class)->except(['show']);
+    Route::post('/academic-years/{academicYear}/activate', [App\Http\Controllers\AcademicYearController::class, 'activate'])->name('academic-years.activate');
+    Route::resource('academic-years', App\Http\Controllers\AcademicYearController::class);
 });

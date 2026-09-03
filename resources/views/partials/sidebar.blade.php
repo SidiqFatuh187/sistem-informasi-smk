@@ -171,10 +171,14 @@
 
             {{-- TAHUN AJARAN --}}
             <a
-                href="#"
-                class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-white/75 transition-all duration-200 hover:bg-white/[0.07] hover:text-white"
+                href="{{ route('academic-years.index') }}"
+                class="group relative flex items-center gap-3 overflow-hidden rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 {{ $currentRoute && str_starts_with($currentRoute, 'academic-years') ? 'bg-gradient-to-r from-[#f5b63f]/25 via-white/10 to-transparent text-white' : 'text-white/75 hover:bg-white/[0.07] hover:text-white' }}"
             >
-                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 transition-colors group-hover:bg-white/15">
+                @if ($currentRoute && str_starts_with($currentRoute, 'academic-years'))
+                    <span class="absolute inset-y-1.5 left-0 w-[3px] rounded-full bg-[#f5b63f]"></span>
+                @endif
+
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $currentRoute && str_starts_with($currentRoute, 'academic-years') ? 'bg-[#f5b63f]/20' : 'bg-white/10 group-hover:bg-white/15' }}">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="h-5 w-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
                 </span>
 
