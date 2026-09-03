@@ -12,7 +12,7 @@ Document status context and technical specification for GitHub Copilot assistant
 - [x] **Sidebar Dashboard Utama** (Selesai)
 - [x] **Role Middleware / Otorisasi Dasar** (Admin, Guru, Kepala Sekolah)
 - [x] **CRUD Data Master Siswa** (Selesai)
-- [ ] **Data Master CRUD** (Guru, Kelas, Tahun Ajaran)
+- [ ] **Data Master CRUD** (Tahun Ajaran)
 - [ ] **Form Input Absensi Harian** (Grid View Bulk Input)
 - [ ] **Laporan & Rekap Kehadiran** (Agregasi & Persentase)
 
@@ -21,6 +21,11 @@ Document status context and technical specification for GitHub Copilot assistant
 - Struktur model dan migration dasar untuk siswa, guru, kelas, tahun ajaran, dan absensi sudah dibuat.
 - Middleware `role` sudah terdaftar dan dipersiapkan untuk membatasi akses sesuai hak peran.
 - CRUD siswa sudah dibuat, termasuk list, create, edit, update, delete, serta tombol hapus dengan modal konfirmasi.
+- CRUD kelas sudah dibuat, termasuk penugasan wali kelas, detail kelas, daftar siswa, dan kenaikan siswa secara massal maupun per siswa.
+- CRUD guru sudah dibuat, termasuk pembuatan akun login guru dan penugasan beberapa kelas sebagai wali kelas.
+- Komponen konfirmasi reusable tersedia untuk aksi hapus dan aksi penting seperti kenaikan kelas.
+- Penghapusan kelas yang masih memiliki siswa diblokir agar data siswa tidak ikut terhapus. Penghapusan guru melepas penugasan kelas tanpa menghapus kelas, siswa, atau riwayat absensi.
+- Halaman 403 role-aware sudah tersedia untuk menjelaskan batas akses dan menyediakan navigasi kembali.
 - Aplikasi sudah dapat boot ulang normal setelah membersihkan cache package discovery yang stale dari `bootstrap/cache/packages.php`.
 
 ---
@@ -63,12 +68,13 @@ Document status context and technical specification for GitHub Copilot assistant
 
 ## 🎯 Fitur Inti & Kompleksitas Fitur
 
-| Fitur                         | Deskripsi Technical                                                                                               | Kompleksitas |   Status   |
-| :---------------------------- | :---------------------------------------------------------------------------------------------------------------- | :----------: | :--------: |
-| **CRUD Siswa, Kelas, Guru**   | Form + tabel standar CRUD master data                                                                             |    Mudah     | ⏳ Pending |
-| **Form Input Absensi Harian** | Tampilan grid dengan pilihan status per baris untuk semua siswa sekaligus (batch submission)                      |    Sedang    | ⏳ Pending |
-| **Laporan Rekap Kehadiran**   | Rekap persentase kehadiran per siswa/kelas menggunakan query agregasi MySQL (`COUNT`, `GROUP BY`)                 |    Sedang    | ⏳ Pending |
-| **Role & Permission**         | Proteksi akses kelas & fitur menggunakan Middleware / Policy Laravel v13 (Guru hanya bisa input kelasnya sendiri) |    Sedang    | ⏳ Pending |
+| Fitur                         | Deskripsi Technical                                                                                              | Kompleksitas |   Status    |
+| :---------------------------- | :--------------------------------------------------------------------------------------------------------------- | :----------: | :---------: |
+| **CRUD Siswa, Kelas, Guru**   | Form + tabel standar CRUD master data                                                                            |    Mudah     | ✅ Selesai  |
+| **Kenaikan Kelas**            | Detail kelas dengan pilihan siswa; siswa terpilih dipindahkan ke kelas tujuan, siswa lain tetap di kelas asal    |    Sedang    | ✅ Selesai  |
+| **Form Input Absensi Harian** | Tampilan grid dengan pilihan status per baris untuk semua siswa sekaligus (batch submission)                     |    Sedang    | ⏳ Pending  |
+| **Laporan Rekap Kehadiran**   | Rekap persentase kehadiran per siswa/kelas menggunakan query agregasi MySQL (`COUNT`, `GROUP BY`)                |    Sedang    | ⏳ Pending  |
+| **Role & Permission**         | Proteksi route admin dengan middleware role dan halaman 403; pembatasan kelas Guru diterapkan saat fitur absensi |    Sedang    | 🔄 Berjalan |
 
 ---
 
@@ -96,7 +102,7 @@ Document status context and technical specification for GitHub Copilot assistant
 
 ### 6. `attendances` (Absensi)
 
-- `id`, `student_id` (FK), `class_id` (FK), `teacher_id` (FK), `date`, `status` (`hadir`, `sakit`, `izin`, `alpa`), `notes`
+- `id`, `student_id` (FK), `class_id` (FK), `teacher_id` (FK nullable), `date`, `status` (`hadir`, `sakit`, `izin`, `alpa`), `notes`
 
 ---
 
