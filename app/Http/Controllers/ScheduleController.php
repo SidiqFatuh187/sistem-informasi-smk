@@ -19,13 +19,18 @@ class ScheduleController extends Controller
         $day = $request->input('day');
         $classId = $request->input('class_id');
         $academicYears = AcademicYear::orderByDesc('is_active')->orderByDesc('tahun')->get();
-        $classes = ClassModel::orderBy('nama_kelas')->get();
+        $classes = ClassModel::when($request->user()->role !== 'admin', function ($query) use ($request) {
+            $query->whereHas('schedules', fn ($scheduleQuery) => $scheduleQuery->where('teacher_id', $request->user()->teacher?->id ?? -1));
+        })->orderBy('nama_kelas')->get();
 
         $schedules = Schedule::with(['academicYear', 'classRoom', 'teacher'])
+            ->when($request->user()->role !== 'admin', function ($query) use ($request) {
+                $query->where('teacher_id', $request->user()->teacher?->id ?? -1);
+            })
             ->when($academicYearId, fn ($query) => $query->where('academic_year_id', $academicYearId))
             ->when($day, fn ($query) => $query->where('day', $day))
             ->when($classId, fn ($query) => $query->where('class_id', $classId))
-            ->orderByRaw("FIELD(day, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu')")
+            ->orderByRaw("CASE day WHEN 'Senin' THEN 1 WHEN 'Selasa' THEN 2 WHEN 'Rabu' THEN 3 WHEN 'Kamis' THEN 4 WHEN 'Jumat' THEN 5 WHEN 'Sabtu' THEN 6 ELSE 7 END")
             ->orderBy('start_time')
             ->get();
 
