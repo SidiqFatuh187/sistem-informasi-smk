@@ -201,15 +201,17 @@ class AttendanceController extends Controller
 
     private function attendanceStatus(Schedule $schedule, Carbon $now, string $timezone): string
     {
-        if ($schedule->attendance_count === 0) {
-            return 'Belum diabsen';
-        }
-
-        if ($schedule->attendance_count < $schedule->classRoom->students->count()) {
-            return 'Belum lengkap';
-        }
-
+        $totalStudents = $schedule->classRoom->students->count();
         $end = Carbon::parse($now->toDateString() . ' ' . $schedule->end_time, $timezone);
+        $isLate = $now->greaterThan($end);
+
+        if ($schedule->attendance_count === 0) {
+            return $isLate ? 'Input terlambat' : 'Belum diabsen';
+        }
+
+        if ($schedule->attendance_count < $totalStudents) {
+            return $isLate ? 'Input terlambat' : 'Belum lengkap';
+        }
 
         return $schedule->attendances->max('updated_at')?->greaterThan($end) ? 'Input terlambat' : 'Sudah diabsen';
     }
