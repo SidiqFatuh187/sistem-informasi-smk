@@ -210,7 +210,7 @@
 
         {{-- INPUT ABSENSI --}}
         <a
-            href="#"
+            href="{{ route('attendances.index') }}"
             class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/75 transition-all duration-200 hover:bg-white/[0.07] hover:text-white"
         >
             <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 transition-colors group-hover:bg-white/15">

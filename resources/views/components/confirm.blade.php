@@ -6,6 +6,7 @@
     'buttonText' => 'Lanjutkan',
     'method' => 'POST',
     'formId' => null,
+    'confirmAction' => null,
 ])
 
 @php
@@ -22,7 +23,7 @@
 
 <div id="{{ $modalId }}" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
     <div class="w-full max-w-sm overflow-hidden rounded-[1.5rem] bg-white shadow-xl">
-        @if ($formId)
+        @if ($formId || $confirmAction)
             <div class="p-6 text-center">
                 <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border-[6px] border-white bg-amber-50 text-amber-600 shadow-sm shadow-amber-100">
                     <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -37,7 +38,7 @@
                     <button type="button" onclick="document.getElementById('{{ $modalId }}').classList.add('hidden'); document.getElementById('{{ $modalId }}').classList.remove('flex')" class="flex-1 rounded-xl bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200">
                         Batal
                     </button>
-                    <button type="submit" form="{{ $formId }}" class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-700 active:scale-95">
+                    <button type="{{ $confirmAction ? 'button' : 'submit' }}" @if ($confirmAction) onclick="document.getElementById('{{ $modalId }}').classList.add('hidden'); document.getElementById('{{ $modalId }}').classList.remove('flex'); {{ $confirmAction }}" @else form="{{ $formId }}" @endif class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-700 active:scale-95">
                         {{ $confirmText }}
                     </button>
                 </div>
