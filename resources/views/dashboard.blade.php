@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard — SMK Wira Cipta Karya</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -35,11 +36,7 @@
 
                     <div class="flex items-center gap-3">
                         @php
-                            $roleLabels = [
-                                'admin' => 'Admin',
-                                'guru' => 'Guru / Wali Kelas',
-                                'kepala_sekolah' => 'Kepala Sekolah',
-                            ];
+                            $roleLabels = ['admin' => 'Admin', 'guru' => 'Guru / Wali Kelas', 'kepala_sekolah' => 'Kepala Sekolah'];
                             $userRole = auth()->user()->role ?? 'admin';
                         @endphp
 
@@ -58,59 +55,202 @@
             </header>
 
             <div class="max-w-7xl mx-auto px-6 py-12">
-                <div class="mb-10">
-                    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-navy">Dashboard sistem</p>
-                    <h2 class="mt-3 text-3xl font-bold">Panel {{ $roleLabels[$userRole] ?? 'Pengguna' }} SMK Wira Cipta Karya</h2>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
-                        <p class="text-sm text-slate">Jumlah Siswa</p>
-                        <p class="mt-3 text-3xl font-bold">1.248</p>
+                @if (! $academicYear)
+                    <div class="rounded-2xl border border-dashed border-ink/15 bg-white p-8 text-center text-sm text-slate">
+                        Belum ada tahun ajaran aktif. Silakan atur di menu Tahun Ajaran terlebih dahulu.
                     </div>
-                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
-                        <p class="text-sm text-slate">Kehadiran Hari Ini</p>
-                        <p class="mt-3 text-3xl font-bold">94%</p>
+                @elseif ($mode === 'admin')
+                    <div class="mb-10">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-navy">Dashboard sistem</p>
+                        <h2 class="mt-3 text-3xl font-bold">Panel Admin SMK Wira Cipta Karya</h2>
+                        <p class="mt-1 text-sm text-slate">{{ $academicYear->tahun }} · Semester {{ $academicYear->semester }}</p>
                     </div>
-                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
-                        <p class="text-sm text-slate">Kelas Aktif</p>
-                        <p class="mt-3 text-3xl font-bold">18</p>
+
+                    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Jumlah Siswa</p>
+                            <p class="mt-3 text-3xl font-bold">{{ $totalStudents }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Jumlah Guru</p>
+                            <p class="mt-3 text-3xl font-bold">{{ $totalTeachers }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Kelas Aktif</p>
+                            <p class="mt-3 text-3xl font-bold">{{ $totalClasses }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Kehadiran Hari Ini</p>
+                            <p class="mt-3 text-3xl font-bold">
+                                {{ $persenHadirToday !== null ? $persenHadirToday . '%' : '—' }}
+                            </p>
+                            <p class="mt-1 text-xs text-slate">
+                                {{ $totalToday > 0 ? "dari {$totalToday} data absensi" : 'belum ada absensi hari ini' }}
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mt-8 grid lg:grid-cols-[1.5fr_1fr] gap-6">
-                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
-                        <h3 class="text-xl font-bold mb-4">Aktivitas utama</h3>
+                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm mt-6">
+                        <h3 class="text-lg font-bold mb-4">Tren kehadiran 7 hari terakhir</h3>
+                        <canvas id="trendChart" height="90"></canvas>
+                    </div>
 
-                        @if ($userRole === 'admin')
-                            <ul class="space-y-3 text-slate">
-                                <li>• Kelola data master siswa, guru, kelas, dan tahun ajaran.</li>
-                                <li>• Pantau rekap kehadiran seluruh kelas.</li>
-                                <li>• Mengatur pengguna dan akses sistem.</li>
-                            </ul>
-                        @elseif ($userRole === 'guru')
-                            <ul class="space-y-3 text-slate">
-                                <li>• Input absensi harian untuk kelas yang diampu.</li>
-                                <li>• Cek rekap kehadiran per siswa dan per kelas.</li>
-                                <li>• Hanya dapat mengelola kelas sendiri.</li>
-                            </ul>
+                    <script>
+                        new Chart(document.getElementById('trendChart'), {
+                            type: 'line',
+                            data: {
+                                labels: {!! json_encode($trend->pluck('label')) !!},
+                                datasets: [{
+                                    label: '% Kehadiran',
+                                    data: {!! json_encode($trend->pluck('persentase')) !!},
+                                    borderColor: '#1E3A5F',
+                                    backgroundColor: 'rgba(30, 58, 95, 0.1)',
+                                    fill: true,
+                                    tension: 0.3,
+                                    pointRadius: 4,
+                                    pointBackgroundColor: '#E8A33D',
+                                }]
+                            },
+                            options: {
+                                scales: { y: { beginAtZero: true, max: 100 } },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    </script>
+                @elseif ($mode === 'guru')
+                    <div class="mb-10">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-navy">Dashboard sistem</p>
+                        <h2 class="mt-3 text-3xl font-bold">Ringkasan Hari Ini</h2>
+                        <p class="mt-1 text-sm text-slate">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</p>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Jadwal Hari Ini</p>
+                            <p class="mt-3 text-3xl font-bold">{{ $totalToday }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Sudah Lengkap</p>
+                            <p class="mt-3 text-3xl font-bold text-emerald-700">{{ $completeToday }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Belum Diabsen</p>
+                            <p class="mt-3 text-3xl font-bold text-amber-700">{{ $pendingToday }}</p>
+                        </div>
+                        <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
+                            <p class="text-sm text-slate">Kelas Diampu</p>
+                            <p class="mt-3 text-3xl font-bold">{{ $totalClasses }}</p>
+                        </div>
+                    </div>
+
+                    @if ($waliKelas)
+                        <div class="bg-navy text-white rounded-2xl p-6 shadow-sm mb-6 flex items-center justify-between gap-4 flex-wrap">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.2em] text-white/60">Wali Kelas</p>
+                                <p class="mt-1 text-lg font-bold">{{ $waliKelas->nama_kelas }} · {{ $waliKelas->students_count }} siswa</p>
+                            </div>
+                            <a href="{{ route('rekap.kelas', ['class' => $waliKelas->id, 'academic_year_id' => $academicYear->id]) }}"
+                                class="rounded-full bg-amber px-5 py-2.5 text-sm font-semibold text-ink hover:brightness-95">
+                                Lihat Rekap Kelasku
+                            </a>
+                        </div>
+                    @endif
+
+                    <div class="bg-white border border-ink/10 rounded-2xl overflow-hidden shadow-sm">
+                        <div class="px-6 py-4 border-b border-ink/10">
+                            <h3 class="font-bold">Jadwal mengajar hari ini</h3>
+                        </div>
+
+                        @if ($todaySchedules->isEmpty())
+                            <p class="p-6 text-sm text-slate">Tidak ada jadwal mengajar hari ini.</p>
                         @else
-                            <ul class="space-y-3 text-slate">
-                                <li>• Melihat rekap kehadiran semua kelas.</li>
-                                <li>• Meninjau laporan bulanan dan semester.</li>
-                                <li>• Tidak memiliki akses edit data master atau absensi.</li>
+                            <ul class="divide-y divide-ink/10">
+                                @foreach ($todaySchedules as $schedule)
+                                    <li class="flex flex-wrap items-center justify-between gap-3 px-6 py-4">
+                                        <div>
+                                            <p class="font-semibold">{{ $schedule->subject }} · {{ $schedule->classRoom->nama_kelas }}</p>
+                                            <p class="text-xs text-slate">
+                                                {{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }} WIB
+                                                · {{ $schedule->attendance_count }}/{{ $schedule->total_students }} siswa diabsen
+                                            </p>
+                                        </div>
+
+                                        @if ($schedule->is_complete)
+                                            <span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Sudah diabsen</span>
+                                        @else
+                                            <a href="{{ route('attendances.create', ['schedule_id' => $schedule->id, 'date' => $today]) }}"
+                                                class="rounded-full bg-ink px-4 py-2 text-xs font-semibold text-white hover:bg-navy">
+                                                Isi Absensi
+                                            </a>
+                                        @endif
+                                    </li>
+                                @endforeach
                             </ul>
                         @endif
                     </div>
 
-                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm">
-                        <h3 class="text-xl font-bold mb-4">Status login</h3>
-                        <p class="text-slate">Anda login sebagai <span class="font-semibold text-ink">{{ auth()->user()->email }}</span>.</p>
-                        <p class="mt-3 text-sm text-slate">
-                            Sistem ini masih bersifat dashboard sementara sesuai alur project dan role access yang sudah ditetapkan.
-                        </p>
+                    <div class="mt-6">
+                        <a href="{{ route('attendances.index') }}" class="text-sm font-semibold text-navy hover:underline">
+                            Buka halaman Input Absensi lengkap →
+                        </a>
                     </div>
-                </div>
+                @else
+                    {{-- KEPALA SEKOLAH --}}
+                    <div class="mb-10">
+                        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-navy">Dashboard sistem</p>
+                        <h2 class="mt-3 text-3xl font-bold">Rekap Kehadiran Seluruh Kelas</h2>
+                        <p class="mt-1 text-sm text-slate">{{ $academicYear->tahun }} · Semester {{ $academicYear->semester }}</p>
+                    </div>
+
+                    <div class="bg-white border border-ink/10 rounded-2xl p-6 shadow-sm mb-6">
+                        <h3 class="text-lg font-bold mb-4">Persentase kehadiran per kelas</h3>
+                        <canvas id="kehadiranChart" height="90"></canvas>
+                    </div>
+
+                    <div class="bg-white border border-ink/10 rounded-2xl overflow-hidden shadow-sm">
+                        <table class="min-w-full divide-y divide-ink/10">
+                            <thead class="bg-cream">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate">Kelas</th>
+                                    <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate">Siswa</th>
+                                    <th class="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wide text-slate">% Kehadiran</th>
+                                    <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-slate">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-ink/10">
+                                @foreach ($classes as $class)
+                                    <tr>
+                                        <td class="px-4 py-3 text-sm font-semibold">{{ $class->nama_kelas }}</td>
+                                        <td class="px-4 py-3 text-center text-sm text-slate">{{ $class->students_count }}</td>
+                                        <td class="px-4 py-3 text-center text-sm font-bold">{{ $class->persentase }}%</td>
+                                        <td class="px-4 py-3 text-right">
+                                            <a href="{{ route('rekap.kelas', ['class' => $class->id, 'academic_year_id' => $academicYear->id]) }}" class="text-xs font-semibold text-navy hover:underline">Lihat detail</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <script>
+                        new Chart(document.getElementById('kehadiranChart'), {
+                            type: 'bar',
+                            data: {
+                                labels: {!! json_encode($classes->pluck('nama_kelas')) !!},
+                                datasets: [{
+                                    label: '% Kehadiran',
+                                    data: {!! json_encode($classes->pluck('persentase')) !!},
+                                    backgroundColor: '#E8A33D',
+                                    borderRadius: 6,
+                                }]
+                            },
+                            options: {
+                                scales: { y: { beginAtZero: true, max: 100 } },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+                    </script>
+                @endif
             </div>
         </main>
     </div>
