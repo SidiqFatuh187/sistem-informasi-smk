@@ -238,6 +238,7 @@
             </span>
 
         </a>
+    </nav>
 
     {{-- STATUS --}}
     <div class="relative mt-10 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.08] to-white/[0.02] p-4 shadow-inner shadow-black/20">
