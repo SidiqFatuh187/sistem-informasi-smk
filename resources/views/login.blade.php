@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk — SMK Wira Cipta Karya</title>
+    <title>Masuk — SMK Negeri 1 Indralaya Selatan</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +20,7 @@
                         amber: '#E8A33D',
                         cream: '#F7F6F1',
                         slate: '#4B5563',
+                        forest: '#1F7A46',
                     },
                     fontFamily: {
                         display: ['"Space Grotesk"', 'sans-serif'],
@@ -33,13 +34,15 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .font-display { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Bentuk signature yang sama seperti di welcome.blade — dipakai terbatas */
         .clip-panel {
             clip-path: polygon(8% 0%, 100% 0%, 100% 92%, 92% 100%, 0% 100%, 0% 8%);
         }
-        .dot-grid {
-            background-image: radial-gradient(#1E3A5F22 1.5px, transparent 1.5px);
-            background-size: 18px 18px;
+        .clip-corner {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 28px 100%, 0 calc(100% - 28px));
         }
+
         @media (prefers-reduced-motion: no-preference) {
             .fade-in-up { animation: fadeInUp 0.7s ease-out both; }
         }
@@ -59,14 +62,15 @@
 
         {{-- SISI KIRI — BRANDING / DEKORASI --}}
         <div class="hidden lg:flex lg:col-span-5 relative bg-ink overflow-hidden flex-col justify-between p-12">
-            <div class="absolute inset-0 dot-grid opacity-10 pointer-events-none"></div>
+            {{-- Aksen sudut, dipakai terbatas — pengganti dot-grid --}}
+            <div class="clip-corner absolute bottom-0 right-0 w-40 h-40 bg-amber/15 pointer-events-none"></div>
 
             <a href="/" class="flex items-center gap-3 relative z-10">
-                <span class="w-10 h-10 rounded-full bg-amber flex items-center justify-center">
-                    <span class="font-display font-bold text-ink text-sm">WCK</span>
+                <span class="w-10 h-10 bg-amber flex items-center justify-center shrink-0">
+                    <span class="font-display font-bold text-ink text-[11px]">SMKN 1</span>
                 </span>
                 <span class="font-display font-semibold text-lg text-cream leading-tight">
-                    SMK Wira Cipta Karya
+                    SMK Negeri 1 Indralaya Selatan
                 </span>
             </a>
 
@@ -84,25 +88,24 @@
             </div>
 
             <div class="relative z-10 flex items-center gap-6 text-cream/50 text-xs">
-                <span>© {{ date('Y') }} SMK Wira Cipta Karya</span>
-                <span class="w-1 h-1 rounded-full bg-cream/30"></span>
+                <span>© {{ date('Y') }} SMK Negeri 1 Indralaya Selatan</span>
+                <span class="w-1 h-1 bg-cream/30"></span>
                 <span>Semua hak dilindungi</span>
             </div>
         </div>
 
         {{-- SISI KANAN — FORM LOGIN --}}
         <div class="lg:col-span-7 flex items-center justify-center px-6 py-16 relative">
-            <div class="absolute inset-0 dot-grid opacity-40 pointer-events-none lg:hidden"></div>
 
             <div class="w-full max-w-md relative fade-in-up">
 
                 {{-- Logo mobile --}}
                 <a href="/" class="flex lg:hidden items-center gap-3 mb-10 justify-center">
-                    <span class="w-10 h-10 rounded-full bg-ink flex items-center justify-center">
-                        <span class="font-display font-bold text-amber text-sm">WCK</span>
+                    <span class="w-10 h-10 bg-ink flex items-center justify-center shrink-0">
+                        <span class="font-display font-bold text-amber text-[11px]">SMKN 1</span>
                     </span>
                     <span class="font-display font-semibold text-lg text-ink">
-                        SMK Wira Cipta Karya
+                        SMK Negeri 1 Indralaya Selatan
                     </span>
                 </a>
 
@@ -119,14 +122,14 @@
 
                     {{-- Notifikasi status session (misal: logout berhasil) --}}
                     @if (session('status'))
-                        <div class="mt-6 rounded-xl bg-navy/10 border border-navy/20 text-navy text-sm px-4 py-3">
+                        <div class="mt-6 bg-navy/10 border border-navy/20 text-navy text-sm px-4 py-3">
                             {{ session('status') }}
                         </div>
                     @endif
 
                     {{-- Error umum (misal: kredensial salah) --}}
                     @error('email')
-                        <div class="mt-6 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
+                        <div class="mt-6 bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3">
                             {{ $message }}
                         </div>
                     @enderror
@@ -147,8 +150,8 @@
                                 required
                                 autofocus
                                 autocomplete="username"
-                                placeholder="nama@smkwck.sch.id"
-                                class="w-full rounded-xl border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-slate/60 focus:border-navy focus:bg-white focus:outline-none transition-colors"
+                                placeholder="nama@smkn1indralayaselatan.sch.id"
+                                class="w-full border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-slate/60 focus:border-navy focus:bg-white focus:outline-none transition-colors"
                             >
                         </div>
 
@@ -171,7 +174,7 @@
                                 required
                                 autocomplete="current-password"
                                 placeholder="••••••••"
-                                class="w-full rounded-xl border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-slate/60 focus:border-navy focus:bg-white focus:outline-none transition-colors"
+                                class="w-full border border-ink/15 bg-cream/60 px-4 py-3 text-sm text-ink placeholder:text-slate/60 focus:border-navy focus:bg-white focus:outline-none transition-colors"
                             >
                             @error('password')
                                 <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
@@ -184,7 +187,7 @@
                                 id="remember"
                                 type="checkbox"
                                 name="remember"
-                                class="w-4 h-4 rounded border-ink/20 text-navy focus:ring-amber"
+                                class="w-4 h-4 border-ink/20 text-navy focus:ring-amber"
                             >
                             <label for="remember" class="text-sm text-slate">
                                 Ingat saya di perangkat ini
@@ -193,7 +196,7 @@
 
                         <button
                             type="submit"
-                            class="w-full inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-ink text-cream text-sm font-semibold hover:bg-navy transition-colors"
+                            class="w-full inline-flex items-center justify-center px-7 py-3.5 bg-ink text-cream text-sm font-semibold hover:bg-navy transition-colors"
                         >
                             Masuk
                         </button>
