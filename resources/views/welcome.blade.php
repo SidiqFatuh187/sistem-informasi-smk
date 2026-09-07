@@ -75,6 +75,7 @@
                 <li><a href="#tentang" class="hover:text-ink transition-colors">Tentang</a></li>
                 <li><a href="#program" class="hover:text-ink transition-colors">Program Keahlian</a></li>
                 <li><a href="#fasilitas" class="hover:text-ink transition-colors">Fasilitas</a></li>
+                <li><a href="#koperasi" class="hover:text-ink transition-colors">Koperasi</a></li>
                 <li><a href="#kontak" class="hover:text-ink transition-colors">Kontak</a></li>
             </ul>
 
@@ -99,6 +100,7 @@
             <a href="#tentang" class="block py-1">Tentang</a>
             <a href="#program" class="block py-1">Program Keahlian</a>
             <a href="#fasilitas" class="block py-1">Fasilitas</a>
+            <a href="#koperasi" class="block py-1">Koperasi</a>
             <a href="#kontak" class="block py-1">Kontak</a>
             <a href="{{ route('login') }}" class="block py-2 font-semibold text-ink">Masuk</a>
         </div>
@@ -282,6 +284,56 @@
         </div>
     </section>
 
+    {{-- KOPERASI SEKOLAH --}}
+    <section id="koperasi" class="bg-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20">
+            <div class="rounded-3xl bg-forest text-cream p-6 sm:p-10 lg:p-14 grid lg:grid-cols-12 gap-8 lg:gap-12 items-center overflow-hidden relative">
+                <div class="absolute -right-10 -top-10 w-56 h-56 rounded-full bg-white/5 pointer-events-none"></div>
+                <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-white/5 pointer-events-none"></div>
+
+                <div class="lg:col-span-8 relative">
+                    <span class="inline-flex items-center gap-2 rounded-full bg-amber text-ink text-xs font-semibold px-4 py-1.5">
+                        Segera Hadir
+                    </span>
+                    <h2 class="font-display text-2xl sm:text-3xl font-semibold mt-4">
+                        Koperasi Sekolah
+                    </h2>
+                    <p class="mt-3 text-cream/85 text-sm sm:text-base leading-relaxed max-w-xl">
+                        SMK Negeri 1 Indralaya Selatan sedang menyiapkan koperasi sekolah sebagai
+                        wadah praktik kewirausahaan siswa sekaligus penyedia kebutuhan sehari-hari
+                        warga sekolah — mulai dari alat tulis, seragam, hingga produk hasil praktik
+                        siswa dari berbagai program keahlian.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        @foreach (['Alat Tulis & Kebutuhan Sekolah', 'Seragam & Atribut', 'Produk Hasil Praktik Siswa', 'Jajanan & Minuman'] as $kategori)
+                            <span class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-xs sm:text-sm">
+                                {{ $kategori }}
+                            </span>
+                        @endforeach
+                    </div>
+
+                    <a href="{{ route('koperasi') }}"
+                       class="mt-7 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-forest text-sm font-semibold hover:bg-cream transition-colors">
+                        Lihat Halaman Koperasi
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="lg:col-span-4 relative">
+                    <div class="rounded-2xl bg-white/10 border border-white/15 p-5 sm:p-6">
+                        <p class="text-xs uppercase tracking-[0.2em] text-cream/60 font-semibold mb-2">Info</p>
+                        <p class="text-sm text-cream/85 leading-relaxed">
+                            Detail lokasi, jam operasional, dan katalog produk akan diumumkan
+                            menyusul setelah koperasi resmi beroperasi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     {{-- MITRA INDUSTRI --}}
     <section class="bg-ink">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14">
@@ -335,6 +387,7 @@
                     <li><a href="#tentang" class="hover:text-ink">Tentang Kami</a></li>
                     <li><a href="#program" class="hover:text-ink">Program Keahlian</a></li>
                     <li><a href="#fasilitas" class="hover:text-ink">Fasilitas</a></li>
+                    <li><a href="#koperasi" class="hover:text-ink">Koperasi Sekolah</a></li>
                 </ul>
             </div>
             <div>
